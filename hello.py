@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request, render_template
+from flask import Flask, abort, make_response, redirect, request, render_template, url_for
 from markupsafe import escape
 from werkzeug.utils import secure_filename
 
@@ -19,6 +19,7 @@ To render a template you can use the render_template() method
 Provide the name of the template and the variables you want to pass to the template
 Flask will look for templates in the 'templates' folder.
 """
+ 
 @app.route('/hello')
 def show_the_login_form():
     
@@ -53,6 +54,7 @@ You can access those files by looking at the 'files' attribute on the request ob
 Each uploaded file is stored in that dictionary.
 'save()' method that allows you to store that file on the filesystem of the server
 """
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -60,12 +62,14 @@ def upload_file():
         f.save('/var/www/uploads/uploaded_file.txt')
     return 'ata'
 
+
 """
 If you want to know how the file was named on the client before it was uploaded to your application
 you can access the 'filename' attribute. 
 Keep in mind that this value can be FORGED so never ever trust that value.
 pass it through the 'secure_filename()' function that Werkzeug provides for you
 """
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -99,3 +103,16 @@ def index():
 
 # To redirect a user to another endpoint, use the 'redirect()' function
 # to abort a request early with an error code, use the 'abort()' function
+@app.route('/')
+def index():
+    return redirect(url_for('login'))
+
+@app.route('/login')
+def login():
+    abort(401)
+    this_is_never_executed()
+
+# if you want to customize the error page, you can use the 'errorhandler()' decorator
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404
