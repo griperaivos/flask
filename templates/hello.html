@@ -1,0 +1,11 @@
+<form method="POST">
+    <input type="email" name="email" id="">
+    <button type="submit">APERTA</button>
+</form>
+
+{% if person %}
+ <h1>Hello {{ person }}</h1>
+
+{% else %}
+<h1>Hello, World!</h1>
+{% endif %}
